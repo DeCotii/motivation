@@ -13,6 +13,7 @@ var App = function($el){
 
   if (this.dob) {
     this.renderAgeLoop();
+    this.darkMode();
   } else {
     this.renderChoose();
   }
@@ -25,6 +26,7 @@ App.fn.load = function(){
 
   if (value = localStorage.dob)
     this.dob = new Date(parseInt(value));
+
 };
 
 App.fn.save = function(){
@@ -36,15 +38,24 @@ App.fn.submit = function(e){
   e.preventDefault();
 
   var input = this.$$('input')[0];
-  if ( !input.valueAsDate ) return;
+
+  if ( !input.valueAsDate ) {
+    input.classList.add('error');
+    return
+  }
+
+  document.querySelector('body').classList.add('black-transition');
 
   this.dob = input.valueAsDate;
   this.save();
   this.renderAgeLoop();
+
 };
 
 App.fn.renderChoose = function(){
   this.html(this.view('dob')());
+  var input = this.$$('input')[0];
+  input.focus();
 };
 
 App.fn.renderAgeLoop = function(){
@@ -65,6 +76,10 @@ App.fn.renderAge = function(){
     }));
   }.bind(this));
 };
+
+App.fn.darkMode = function() {
+  document.querySelector('body').classList.add('black',  'no-transition');
+}
 
 App.fn.$$ = function(sel){
   return this.$el.querySelectorAll(sel);
